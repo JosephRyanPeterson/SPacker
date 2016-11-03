@@ -2,6 +2,7 @@
 #define _REGION_H
 
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include "sphere.h"
@@ -30,14 +31,17 @@ namespace SPacker {
         virtual double V() = 0;
         
         // Can be overwritten
-        bool packRegion(std::vector<std::string> &names, std::vector<double> &radii, std::vector<int> &counts);
+        bool packRegion(std::vector<std::tuple<std::string, double, uint32_t> > &objects);
+        
+        // Save Region
+        virtual bool saveRegion(const char *filename);
         
         
     protected:
         
         double volume;
         
-        std::vector<std::vector<Sphere *> *> spheres;
+        std::vector<std::vector<Sphere> *> spheres;
         
     };
     

@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include "sphere.h"
@@ -22,9 +23,7 @@ typedef struct {
     double rel_tolerance;
     
     // Algorithm Arguments
-    vector<string> names;
-    vector<double> radii;
-    vector<int> counts;
+    vector<tuple<string, double, uint32_t> > objects;
     string regionType;
     
     // Algorithm Objects
@@ -104,7 +103,15 @@ int main(int argc, char **argv) {
     }
     
     // Run algorithm
-    params.region->packRegion(params.names, params.radii, params.counts);
+    try {
+        params.region->packRegion(params.objects);
+    } catch(exception &e) {
+        
+    }
+    
+    // Save the region
+    params.region->saveRegion(params.outfile);
+    
     
     // Clean up
     delete params.region;
@@ -128,6 +135,7 @@ bool readInputFile(InputParameters &params) {
         double radius;
         in >> radius;
         params.region = new SphericalRegion(radius);
+        cout << "  Radius: " << radius << endl;
     } else {
         cerr << "Unknown region type: " << params.regionType << endl;
         return false;
@@ -135,14 +143,12 @@ bool readInputFile(InputParameters &params) {
     
     // Read the particle sizes
     string name;
-    int count;
+    uint32_t count;
     double radius;
     cout << "Reading packing objects..." << endl;
     while(in >> name) {
         in >> count >> radius;
-        params.names.push_back(name);
-        params.radii.push_back(radius);
-        params.counts.push_back(count);
+        params.objects.push_back(make_tuple(name,radius,count));
         cout << "  " << name << ":\t" << radius << "\t" << count << endl;
     }
     
