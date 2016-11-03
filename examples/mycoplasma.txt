@@ -1,0 +1,6 @@
+spherical	200.0e-6
+polymerase	500	7.45e-9
+ribosome	3750	11.0e-9
+metabolism	8950	2.0e-9
+atp	64383	7.0e-10
+metabolites	6054980	5.0e-10

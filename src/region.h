@@ -1,32 +1,64 @@
 #ifndef _REGION_H
 #define _REGION_H
 
+#include <string>
 #include <vector>
 
 #include "sphere.h"
 
 namespace SPacker {
 
-class Region {
-public:
-    Region() {};
+    typedef struct {
+        double xmin;
+        double ymin;
+        double zmin;
+        
+        double xmax;
+        double ymax;
+        double zmax;
+    } bounds;
     
-    virtual ~Region() {};
+    class Region {
+    public:
+        Region() {};
+        
+        virtual ~Region() {};
+        
+        // Must be overwritten
+        virtual bool intersects(Sphere &s) = 0;
+        virtual bounds getBoundingBox() = 0;
+        virtual double V() = 0;
+        
+        // Can be overwritten
+        bool packRegion(std::vector<std::string> &names, std::vector<double> &radii, std::vector<int> &counts);
+        
+        
+    protected:
+        
+        double volume;
+        
+        std::vector<std::vector<Sphere *> *> spheres;
+        
+    };
     
-    virtual bool intersects(Sphere &s) = 0;
     
-    bool packRegion(std::vector<double> radii, std::vector<int> counts);
+    class SphericalRegion : public Region {
+    public:
+        SphericalRegion(double radius)
+        :radius(radius)
+        {}
+        
+        virtual bool intersects(Sphere &s);
+        virtual double V();
+        
+        virtual bounds getBoundingBox();
+        
     
-    virtual double V() = 0;
-    
-private:
-    
-    double volume;
-    
-    std::vector<std::vector<Sphere *> *> spheres;
-    
-};
-    
+    private:
+        double radius;
+        
+    };
+
 }
 
 #endif

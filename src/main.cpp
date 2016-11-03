@@ -1,57 +1,153 @@
 #include <iostream>
+#include <fstream>
 #include <cstdio>
 #include <cstdlib>
 #include <unistd.h>
+#include <string>
+#include <vector>
 
 #include "sphere.h"
 #include "region.h"
 
 using namespace std;
+using namespace SPacker;
+
+
+// Program Arguments
+typedef struct {
+    // Command Line Arguments
+    char *infile;
+    char *outfile;
+    double abs_tolerance;
+    double rel_tolerance;
+    
+    // Algorithm Arguments
+    vector<string> names;
+    vector<double> radii;
+    vector<int> counts;
+    string regionType;
+    
+    // Algorithm Objects
+    Region *region;
+} InputParameters;
+
+InputParameters params;
+
+
+// Functions to guage input parameters
+bool readInputFile(InputParameters &params); // False on failure
+
+
+
 
 int main(int argc, char **argv) {
-    char *infile  = NULL;
-    char *outfile  = NULL;
-    double abs_tolerance = 1e-12;
-    double rel_tolerance = 1e-12;
+    // Initialize arguments
+    params.infile  = NULL;
+    params.outfile = NULL;
+    params.abs_tolerance = 1e-12;
+    params.rel_tolerance = 1e-12;
+    
     
     // Read command line arguments
     int c;
-    opterr = 0;
-    while( (c = getopt(argc, argv, "ario:")) != -1) {
+    opterr = 1;
+    while( (c = getopt(argc, argv, "h::a::r::i:o:")) != -1) {
         switch(c) {
+            case 'h':
+                cout << "spacker -i [input file] -o [output file] [OPTIONAL: -h -a [absolute tolerance] -o [relative tolerance]]" << endl;
+                return 0;
+
             // Absolute Tolerance
             case 'a':
-                abs_tolerance = atof(optarg);
+                params.abs_tolerance = atof(optarg);
                 break;
+                
             // Relative Tolerance
             case 'r':
-                rel_tolerance = atof(optarg);
+                params.rel_tolerance = atof(optarg);
                 break;
+                
             // Input File
             case 'i':
-                infile = optarg;
+                params.infile = optarg;
                 break;
+                
             // Output File
             case 'o':
-                outfile = optarg;
+                params.outfile = optarg;
                 break;
+                
             // Other
             case '?':
                 if(optopt == 'c')
-                    cerr << "Option -" << optopt << " requires and argument." << endl;
+                    cerr << "Option -" << (char)optopt << " requires and argument." << endl;
                 else if(isprint(optopt))
-                    cerr << "Unknown option `-" << optopt << "'." << endl;
+                    cerr << "Unknown option `-" << (char)optopt << "'." << endl;
                 else
-                    cerr << "Unknonw option character " << optopt << "." << endl;
+                    cerr << "Unknonw option character " << (char)optopt << "." << endl;
                 return 1;
             
             default:
+                cerr << "Aborting..." << endl;
                 abort();
         }
     }
+    if(params.infile == NULL || params.outfile == NULL) {
+        cerr << "Input and output files must be specified." << endl;
+        return 1;
+    }
+    
+    // Read the input file
+    if(!readInputFile(params)) {
+        cerr << "Reading input file failed: " << params.infile << endl;
+        return 1;
+    }
+    
+    // Run algorithm
+    params.region->packRegion(params.names, params.radii, params.counts);
+    
+    // Clean up
+    delete params.region;
     
     return 0;
 }
 
+
+
+bool readInputFile(InputParameters &params) {
+    ifstream in;
+    in.open(params.infile, ifstream::in);
+    if(!in.good()) {
+        return false;
+    }
+    
+    // Read the Region Type
+    in >> params.regionType;
+    if(params.regionType.compare(string("spherical")) == 0) {
+        cout << "Constructing spherical region..." << endl;
+        double radius;
+        in >> radius;
+        params.region = new SphericalRegion(radius);
+    } else {
+        cerr << "Unknown region type: " << params.regionType << endl;
+        return false;
+    }
+    
+    // Read the particle sizes
+    string name;
+    int count;
+    double radius;
+    cout << "Reading packing objects..." << endl;
+    while(in >> name) {
+        in >> count >> radius;
+        params.names.push_back(name);
+        params.radii.push_back(radius);
+        params.counts.push_back(count);
+        cout << "  " << name << ":\t" << radius << "\t" << count << endl;
+    }
+    
+    in.close();
+    return true;
+}
 
 
