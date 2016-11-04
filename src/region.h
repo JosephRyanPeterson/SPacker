@@ -9,6 +9,12 @@
 
 namespace SPacker {
 
+    enum {
+        DEFAULT = 0,
+        XYZ = 1
+    };
+    
+    
     typedef struct {
         double xmin;
         double ymin;
@@ -34,7 +40,7 @@ namespace SPacker {
         bool packRegion(std::vector<std::tuple<std::string, double, uint32_t> > &objects);
         
         // Save Region
-        virtual bool saveRegion(const char *filename);
+        virtual bool saveRegion(const char *filename, int filetype = XYZ);
         
         
     protected:

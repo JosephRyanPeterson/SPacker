@@ -1,3 +1,4 @@
+#include <cmath>
 
 #include "sphere.h"
 
@@ -21,5 +22,8 @@ namespace SPacker {
     double Sphere::Y() {return y;}
     
     double Sphere::Z() {return z;}
+    
+    double Sphere::V() {return 4.0/3.0*M_PI*radius*radius*radius;}
+    
 }
 

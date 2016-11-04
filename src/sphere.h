@@ -32,6 +32,7 @@ namespace SPacker {
         double X();
         double Y();
         double Z();
+        double V();
         
     private:
         double radius;
