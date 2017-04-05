@@ -24,7 +24,10 @@ namespace SPacker {
             throw exception();
         
         // Determine large to small ordering
-        // TODO
+        sort(objects.begin(), objects.end(),
+             [](tuple<string, double, uint32_t> a, tuple<string, double, uint32_t> b)
+              { return get<1>(a) < get<1>(b); } );
+        reverse(objects.begin(), objects.end());
         
         // Get the bounding box
         bounds bbox = this->getBoundingBox();
