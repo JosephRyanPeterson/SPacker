@@ -9,6 +9,7 @@
 
 #include "sphere.h"
 #include "region.h"
+#include "packer.h"
 
 using namespace std;
 using namespace SPacker;
@@ -104,7 +105,8 @@ int main(int argc, char **argv) {
     
     // Run algorithm
     try {
-        params.region->packRegion(params.objects);
+        SimplePacker packer;
+        params.region->packRegion(params.objects, &packer);
     } catch(exception &e) {
         
     }
