@@ -136,6 +136,13 @@ bool readInputFile(InputParameters &params) {
         in >> radius;
         params.region = new SphericalRegion(radius);
         cout << "  Radius: " << radius << endl;
+    } else if(params.regionType.compare(string("spherocylinder")) == 0)  {
+        cout << "Constructing spherocylinder region..." << endl;
+        double radius;
+        double length;
+        in >> radius >> length;
+        params.region = new SpherocylinderRegion(radius,length);
+        cout << "  Radius: " << radius << " Length: " << length << endl;
     } else {
         cerr << "Unknown region type: " << params.regionType << endl;
         return false;

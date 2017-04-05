@@ -63,6 +63,25 @@ namespace SPacker {
         
     };
 
+    class SpherocylinderRegion : public Region {
+    public:
+        SpherocylinderRegion(double radius, double length)
+        :radius(radius)
+        ,length(length)
+        {}
+        
+        virtual bool intersects(Sphere &s);
+        virtual double V();
+        
+        virtual bounds getBoundingBox();
+        
+    
+    private:
+        double radius;
+        double length;
+        
+    };
+
 }
 
 #endif

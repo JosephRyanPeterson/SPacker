@@ -91,7 +91,6 @@ namespace SPacker {
             }
         }
         
-        
         outf.close();
         return true;
     }
@@ -112,6 +111,29 @@ namespace SPacker {
     
     double SphericalRegion::V() {
         return 4.0/3.0 * M_PI * this->radius * this->radius * this->radius;
+    }
+
+    // Spherocylinder Region
+    bool SpherocylinderRegion::intersects(Sphere &s) {
+        bool int1 = s.intersects(Sphere(0.0,0.0,-(this->length/2.0 - this->radius), this->radius));
+        bool int2 = s.intersects(Sphere(0.0,0.0,  this->length/2.0 - this->radius,  this->radius));
+        bool cyl  = true;
+        if( s.Z() - s.R() > this->length/2.0 || s.X() + s.R() < -this->length/2.0)
+            cyl = false;
+        if( s.X()*s.X() + s.Y()+s.Y() > (this->radius-s.R())*(this->radius-s.R()) )
+            cyl = false;
+        return int1 || int2 || cyl;
+    }
+    
+    bounds SpherocylinderRegion::getBoundingBox() {
+        bounds bb =
+            {-(this->radius), -(this->radius), -(this->length/2.0),
+              (this->radius),  (this->radius),  (this->length/2.0)};
+        return bb;
+    }
+    
+    double SpherocylinderRegion::V() {
+        return M_PI * this->radius * this->radius *(4.0/3.0 * this->radius + (this->length - 2.0 * this->radius));
     }
     
 }
