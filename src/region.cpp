@@ -16,6 +16,13 @@ namespace SPacker {
     
     // Region
     bool Region::packRegion(vector<tuple<string, double, uint32_t> > &objects) {
+        // Error checking
+        double sum = 0.0;
+        for(auto iter = objects.begin(); iter != objects.end(); iter++)
+            sum += Sphere(0.0,0.0,0.0,get<1>(*iter)).V() * get<2>(*iter);
+        if(sum > this->V())
+            throw exception();
+        
         // Determine large to small ordering
         // TODO
         
@@ -76,19 +83,46 @@ namespace SPacker {
     }
     
     
-    bool Region::saveRegion(const char *filename) {
+    bool Region::saveRegion(const char *filename, int filetype) {
         ofstream outf;
         outf.open(filename);
         if(!outf.good()) {
             throw exception();
         }
         
-        // For each sphere set
-        for(auto setIter = spheres.begin(); setIter != spheres.end(); setIter++) {
-            // For each sphere
-            for(auto sphereIter = (*setIter)->begin(); sphereIter != (*setIter)->end(); sphereIter++) {
-                outf << (*sphereIter).X() << "\t" << (*sphereIter).Y() << "\t" << (*sphereIter).Z() << "\t" << (*sphereIter).R() << endl;
-            }
+        switch(filetype) {
+            case DEFAULT:
+            {
+                // For each sphere set
+                for(auto setIter = spheres.begin(); setIter != spheres.end(); setIter++) {
+                    // For each sphere
+                    for(auto sphereIter = (*setIter)->begin(); sphereIter != (*setIter)->end(); sphereIter++) {
+                        outf << (*sphereIter).X() << "\t" << (*sphereIter).Y() << "\t" << (*sphereIter).Z() << "\t" << (*sphereIter).R() << endl;
+                    }
+                }
+            } break;
+                
+            case XYZ:
+            {
+                // Write Header
+                int count = 0;
+                for(auto setIter = spheres.begin(); setIter != spheres.end(); setIter++)
+                    count += (*setIter)->size();
+                outf << count << endl;
+                outf << "Created by SPacker." << endl;
+                // Write "Atoms"
+                char atomtype = 'A';
+                for(auto setIter = spheres.begin(); setIter != spheres.end(); setIter++) {
+                    // For each sphere
+                    for(auto sphereIter = (*setIter)->begin(); sphereIter != (*setIter)->end(); sphereIter++) {
+                        outf << atomtype << "\t" << (*sphereIter).X() << "\t" << (*sphereIter).Y() << "\t" << (*sphereIter).Z() << endl;
+                    }
+                    atomtype += 1;
+                }
+            } break;
+                
+            default:
+                throw exception();
         }
         
         outf.close();
