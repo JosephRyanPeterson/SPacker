@@ -31,12 +31,12 @@ namespace SPacker {
         
         virtual ~Region() {};
         
-        // Must be overwritten
+        // Must be implemented
         virtual bool intersects(Sphere &s) = 0;
         virtual bounds getBoundingBox() = 0;
         virtual double V() = 0;
         
-        // Can be overwritten
+        // Can be implemented
         bool packRegion(std::vector<std::tuple<std::string, double, uint32_t> > &objects);
         
         // Save Region

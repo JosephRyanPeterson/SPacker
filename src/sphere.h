@@ -28,11 +28,11 @@ namespace SPacker {
         
         bool intersects(const Sphere &s);
         
-        double R();
-        double X();
-        double Y();
-        double Z();
-        double V();
+        inline double R();
+        inline double X();
+        inline double Y();
+        inline double Z();
+        inline double V();
         
     private:
         double radius;
