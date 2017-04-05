@@ -20,8 +20,10 @@ namespace SPacker {
         double sum = 0.0;
         for(auto iter = objects.begin(); iter != objects.end(); iter++)
             sum += Sphere(0.0,0.0,0.0,get<1>(*iter)).V() * get<2>(*iter);
-        if(sum > this->V())
+        if(sum >= this->V())
             throw exception();
+        if(sum >= 0.65*this->V())
+            cout << "WARNING: Total volume of packed items >= 0.65*region volume." << endl;
         
         // Determine large to small ordering
         sort(objects.begin(), objects.end(),
@@ -37,8 +39,10 @@ namespace SPacker {
         double y;
         double z;
         vector<uint32_t> countsPacked;
+        int currCount = 1;
+        int countTotal = objects.size();
         for(auto iter = objects.begin(); iter != objects.end(); iter++) {
-            cout << "Packing: " << get<0>(*iter) << endl;
+            cout << "Packing (" << currCount <<"/" << countTotal << "): " << get<0>(*iter) << " Radius: " << get<1>(*iter)<< endl;
             uint32_t attempts = 0;
             uint32_t countToAdd = get<2>(*iter);
             double radius = get<1>(*iter);
@@ -50,7 +54,7 @@ namespace SPacker {
                 if(attempts > 10*countToAdd) {
                     throw exception();
                 }
-                if(countsPacked.back() % (countToAdd/10) == 0)
+                if(countsPacked.back() % std::max((countToAdd/10),(uint)1) == 0)
                     cout << "  " << countsPacked.back() << endl;
                 
                 // Generate random sphere and attempt to place
@@ -68,10 +72,11 @@ namespace SPacker {
                     for(auto sphereIter = (*sphereSizeIter)->begin(); sphereIter != (*sphereSizeIter)->end(); sphereIter++) {
                         if(trial.intersects(*sphereIter)) {
                             successful = false;
-                            sphereSizeIter = spheres.end();
                             break;
                         }
                     }
+                    if(successful == false)
+                        break;
                 }
                 if(successful) {
                     spheres.back()->push_back(trial);
@@ -82,6 +87,8 @@ namespace SPacker {
                 // Update placement attempts
                 attempts++;
             }
+            // Update counter
+            currCount++;
         }
     }
     

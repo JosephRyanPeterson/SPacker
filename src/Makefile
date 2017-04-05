@@ -1,6 +1,6 @@
-CXX := clang++
+CXX := g++
 SRC := sphere.cpp region.cpp main.cpp
-FLAGS := -std=c++11
+FLAGS := -std=c++11 -g3
 LIB :=
 INC :=
 

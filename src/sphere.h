@@ -2,6 +2,7 @@
 #define _SPHERE_H
 
 #include <exception>
+#include <cmath>
 
 namespace SPacker {
 
@@ -28,11 +29,11 @@ namespace SPacker {
         
         bool intersects(const Sphere &s);
         
-        inline double R();
-        inline double X();
-        inline double Y();
-        inline double Z();
-        inline double V();
+        inline double R() {return radius;}
+        inline double X() {return x;}
+        inline double Y() {return y;}
+        inline double Z() {return z;}
+        inline double V() {return 4.0/3.0*M_PI*radius*radius*radius;}
         
     private:
         double radius;
