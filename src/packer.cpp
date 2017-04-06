@@ -81,6 +81,9 @@ namespace SPacker {
     bool UniformGridPacker::pack(std::vector<std::tuple<std::string, double, uint32_t> > &objects, Region *region) {
         // Get the bounding box
         bounds bbox = region->getBoundingBox();
+        double bbdx = bbox.xmax-bbox.xmin;
+        double bbdy = bbox.ymax-bbox.ymin;
+        double bbdz = bbox.zmax-bbox.zmin;
         // Get region spheres
         auto spheres = region->Spheres();
        
@@ -92,9 +95,9 @@ namespace SPacker {
             }
         }
         dx *= 3.0;
-        uint32_t nx = std::ceil((bbox.xmax-bbox.xmin)/dx);
-        uint32_t ny = std::ceil((bbox.ymax-bbox.ymin)/dx);
-        uint32_t nz = std::ceil((bbox.zmax-bbox.zmin)/dx);
+        uint32_t nx = std::ceil(bbdx/dx);
+        uint32_t ny = std::ceil(bbdy/dx);
+        uint32_t nz = std::ceil(bbdz/dx);
         uint32_t gridPoints = nx*ny*nz;
         auto index = [nx,ny](uint32_t ix, uint32_t iy, uint32_t iz) { return ix + nx*(iy + ny*iz); };
 
@@ -120,6 +123,7 @@ namespace SPacker {
             double x, y, z; // Trial sphere center 
             uint32_t ix, iy, iz; // Uniform grid indices
             countsPacked.push_back(0);
+            spheres->push_back(new vector<Sphere>());
             while(countsPacked.back() < countToAdd) {
                 // Error checking and printing
                 if(attempts > 10*countToAdd) {
@@ -131,16 +135,16 @@ namespace SPacker {
                 // Generate random sphere and attempt to place
                 Sphere trial = Sphere(x,y,z,radius);
                 do {
-                    x = ((double)rand()/(double)RAND_MAX - 0.5f)*(bbox.xmax-bbox.xmin);
-                    y = ((double)rand()/(double)RAND_MAX - 0.5f)*(bbox.ymax-bbox.ymin);
-                    z = ((double)rand()/(double)RAND_MAX - 0.5f)*(bbox.zmax-bbox.zmin);
+                    x = ((double)rand()/(double)RAND_MAX - 0.5f)*bbdx;
+                    y = ((double)rand()/(double)RAND_MAX - 0.5f)*bbdy;
+                    z = ((double)rand()/(double)RAND_MAX - 0.5f)*bbdz;
                     trial = Sphere(x,y,z,radius);
                 } while(!region->intersects(trial));
                
                 // Get local grid coordinate
-                ix = (uint32_t)floor(x/dx);
-                iy = (uint32_t)floor(y/dx);
-                iz = (uint32_t)floor(z/dx);
+                ix = (uint32_t)floor((x+bbdx)/(2.0*dx));
+                iy = (uint32_t)floor((y+bbdx)/(2.0*dx));
+                iz = (uint32_t)floor((z+bbdx)/(2.0*dx));
  
                 // Find if it intersects
                 bool successful = true;
@@ -162,6 +166,7 @@ namespace SPacker {
                 if(successful) {
                     grid[index(ix,iy,iz)]->push_back(trial);
                     objIdxs[index(ix,iy,iz)]->push_back(get<0>(*iter));
+                    spheres->back()->push_back(trial);
                     countsPacked.back()++;
                 }
                 
@@ -172,7 +177,6 @@ namespace SPacker {
             // Update counter
             currCount++;
         }
-
         return true;
     }
 
