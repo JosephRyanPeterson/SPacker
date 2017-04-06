@@ -105,7 +105,7 @@ int main(int argc, char **argv) {
     
     // Run algorithm
     try {
-        SimplePacker packer;
+        UniformGridPacker packer;
         params.region->packRegion(params.objects, &packer);
     } catch(exception &e) {
         
