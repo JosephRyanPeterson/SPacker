@@ -29,7 +29,17 @@ namespace SPacker {
 
         virtual bool pack(std::vector<std::tuple<std::string, double, uint32_t> > &objects, Region *region);
         
+    private:
+    };
 
+    // Uniform Grid packer
+    class UniformGridPacker : public Packer {
+    public:
+        UniformGridPacker() {}
+        ~UniformGridPacker() {}
+
+        virtual bool pack(std::vector<std::tuple<std::string, double, uint32_t> > &objects, Region *region);
+        
     private:
     };
 
