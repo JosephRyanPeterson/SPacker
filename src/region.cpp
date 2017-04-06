@@ -65,13 +65,18 @@ namespace SPacker {
                 outf << count << endl;
                 outf << "Created by SPacker." << endl;
                 // Write "Atoms"
+                int alphabetNum = 0;
                 char atomtype = 'A';
                 for(auto setIter = spheres.begin(); setIter != spheres.end(); setIter++) {
                     // For each sphere
                     for(auto sphereIter = (*setIter)->begin(); sphereIter != (*setIter)->end(); sphereIter++) {
-                        outf << atomtype << "\t" << (*sphereIter).X() << "\t" << (*sphereIter).Y() << "\t" << (*sphereIter).Z() << endl;
+                        outf << atomtype << alphabetNum << "\t" << (*sphereIter).X() << "\t" << (*sphereIter).Y() << "\t" << (*sphereIter).Z() << endl;
                     }
                     atomtype += 1;
+                    if(atomtype == 'Z' + 1) {
+                        atomtype = 'A';
+                        alphabetNum += 1;
+                    }
                 }
             } break;
                 
@@ -105,11 +110,10 @@ namespace SPacker {
     bool SpherocylinderRegion::intersects(Sphere &s) {
         bool int1 = s.intersects(Sphere(0.0,0.0,-(this->length/2.0 - this->radius), this->radius));
         bool int2 = s.intersects(Sphere(0.0,0.0,  this->length/2.0 - this->radius,  this->radius));
-        bool cyl  = true;
-        if( s.Z() - s.R() > this->length/2.0 || s.X() + s.R() < -this->length/2.0)
-            cyl = false;
-        if( s.X()*s.X() + s.Y()+s.Y() > (this->radius-s.R())*(this->radius-s.R()) )
-            cyl = false;
+        bool cyl  = false;
+        if( s.X()*s.X() + s.Y()*s.Y() < this->radius*this->radius &&
+           (s.Z() - s.R() < (this->length/2.0-this->radius) && s.Z() + s.R() > -(this->length/2.0-this->radius)))
+            cyl = true;
         return int1 || int2 || cyl;
     }
     
