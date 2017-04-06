@@ -105,11 +105,10 @@ namespace SPacker {
     bool SpherocylinderRegion::intersects(Sphere &s) {
         bool int1 = s.intersects(Sphere(0.0,0.0,-(this->length/2.0 - this->radius), this->radius));
         bool int2 = s.intersects(Sphere(0.0,0.0,  this->length/2.0 - this->radius,  this->radius));
-        bool cyl  = true;
-        if( s.Z() - s.R() > this->length/2.0 || s.X() + s.R() < -this->length/2.0)
-            cyl = false;
-        if( s.X()*s.X() + s.Y()+s.Y() > (this->radius-s.R())*(this->radius-s.R()) )
-            cyl = false;
+        bool cyl  = false;
+        if( s.X()*s.X() + s.Y()*s.Y() < this->radius*this->radius &&
+           (s.Z() - s.R() < (this->length/2.0-this->radius) && s.Z() + s.R() > -(this->length/2.0-this->radius)))
+            cyl = true;
         return int1 || int2 || cyl;
     }
     
