@@ -1,12 +1,12 @@
 # Building
 install:
-	- pushd src; make; popd
+   - pushd src; make; popd
 
 # Language
 language: cpp
 
 # Compilers
 complier:
-	- clang
-	- gcc
+   - clang
+   - gcc
 
