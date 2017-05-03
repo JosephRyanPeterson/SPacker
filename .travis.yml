@@ -10,6 +10,7 @@ install:
    - sudo apt-get install -qq shtool
    - sudo apt-get install -qq autogen
    - sudo apt-get install -qq automake
+   - sudo apt-get install -qq autoconf
 
 # Language
 language: cpp
