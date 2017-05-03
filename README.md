@@ -1,4 +1,6 @@
 # SPacker
+[![Build Status](https://travis-ci.org/JosephRyanPeterson/SPacker.svg?branch=master)](https://travis-ci.org/JosephRyanPeterson/SPacker)
+
 Pack a set of spheres into an object.
 
 # Compiling
