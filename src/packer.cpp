@@ -37,7 +37,7 @@ namespace SPacker {
                 // Error checking and printing
                 if(attempts > 10*countToAdd)
                     throw exception();
-                if(countsPacked.back() % std::max((countToAdd/10),(uint)1) == 0)
+                if(countsPacked.back() % std::max((countToAdd/10),(uint32_t)1) == 0)
                     cout << "  " << countsPacked.back() << endl;
                 
                 // Generate random sphere and attempt to place
@@ -129,7 +129,7 @@ namespace SPacker {
                 if(attempts > 10*countToAdd) {
                     throw exception();
                 }
-                if(countsPacked.back() % std::max((countToAdd/10),(uint)1) == 0)
+                if(countsPacked.back() % std::max((countToAdd/10),(uint32_t)1) == 0)
                     cout << "  " << countsPacked.back() << endl;
                 
                 // Generate random sphere and attempt to place
