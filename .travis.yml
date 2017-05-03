@@ -6,11 +6,6 @@ before_install:
 install:
    - sudo apt-get install -qq g++-4.8
    - export CXX="g++-4.8"
-   - sudo apt-get install -qq libtool
-   - sudo apt-get install -qq shtool
-   - sudo apt-get install -qq autogen
-   - sudo apt-get install -qq automake
-   - sudo apt-get install -qq autoconf
 
 # Language
 language: cpp
