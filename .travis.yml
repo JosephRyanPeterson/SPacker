@@ -9,6 +9,7 @@ install:
    - sudo apt-get install -qq libtool
    - sudo apt-get install -qq shtool
    - sudo apt-get install -qq autogen
+   - sudo apt-get install -qq automake
 
 # Language
 language: cpp
