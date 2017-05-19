@@ -1,9 +1,13 @@
-CXX := g++
-SRC := sphere.cpp region.cpp packer.cpp main.cpp
-FLAGS := -std=c++11 -g3
-LIB :=
-INC :=
+# Macros
+CXX      = g++
+DEBUG    = -g
+OBJS     = main.o packer.o region.o sphere.o
+CXXFLAGS = -Wall -std=c++11 -c $(DEBUG)
+LDFLAGS  = -Wall $(DEBUG)
 
-default: 
-	$(CXX) $(INC) $(LIB) $(SRC) $(FLAGS) -o spacker
+default: $(OBJS)
+	$(CXX) $(LDFLAGS) $(OBJS) -o spacker
 
+clean:
+	\rm *.o spacker
+    
