@@ -1,6 +1,6 @@
 # SPacker
 [![Build Status](https://travis-ci.org/JosephRyanPeterson/SPacker.svg?branch=master)](https://travis-ci.org/JosephRyanPeterson/SPacker)
-![Code Climate](https://img.shields.io/codeclimate/github/JosephRyanPeterson/SPacker.svg)
+[![Code Climate](https://img.shields.io/codeclimate/github/JosephRyanPeterson/SPacker.svg)](https://codeclimate.com/github/JosephRyanPeterson/SPacker)
 
 Pack a set of spheres into an object.
 
