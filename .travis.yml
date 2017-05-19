@@ -9,7 +9,7 @@ install:
 
 script:
   - cd src
-  - make
+  - make CXX=g++-4.8
 
 # Language
 language: cpp
